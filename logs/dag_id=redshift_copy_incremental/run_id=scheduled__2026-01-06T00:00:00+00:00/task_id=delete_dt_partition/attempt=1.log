@@ -1,0 +1,54 @@
+[2026-01-30T00:15:28.063+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-01-30T00:15:28.076+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: redshift_copy_incremental.delete_dt_partition scheduled__2026-01-06T00:00:00+00:00 [queued]>
+[2026-01-30T00:15:28.081+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: redshift_copy_incremental.delete_dt_partition scheduled__2026-01-06T00:00:00+00:00 [queued]>
+[2026-01-30T00:15:28.081+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-01-30T00:15:28.092+0000] {taskinstance.py:2330} INFO - Executing <Task(PostgresOperator): delete_dt_partition> on 2026-01-06 00:00:00+00:00
+[2026-01-30T00:15:28.107+0000] {warnings.py:112} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62: DeprecationWarning: This process (pid=616) is multi-threaded, use of fork() may lead to deadlocks in the child.
+  pid = os.fork()
+
+[2026-01-30T00:15:28.109+0000] {standard_task_runner.py:64} INFO - Started process 625 to run task
+[2026-01-30T00:15:28.110+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'redshift_copy_incremental', 'delete_dt_partition', 'scheduled__2026-01-06T00:00:00+00:00', '--job-id', '11', '--raw', '--subdir', 'DAGS_FOLDER/redshift_copy_incremental.py', '--cfg-path', '/tmp/tmpyssqu1_9']
+[2026-01-30T00:15:28.113+0000] {standard_task_runner.py:91} INFO - Job 11: Subtask delete_dt_partition
+[2026-01-30T00:15:28.153+0000] {task_command.py:426} INFO - Running <TaskInstance: redshift_copy_incremental.delete_dt_partition scheduled__2026-01-06T00:00:00+00:00 [running]> on host 58efb3cdc79c
+[2026-01-30T00:15:28.234+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='redshift_copy_incremental' AIRFLOW_CTX_TASK_ID='delete_dt_partition' AIRFLOW_CTX_EXECUTION_DATE='2026-01-06T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-01-06T00:00:00+00:00'
+[2026-01-30T00:15:28.236+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-01-30T00:15:28.236+0000] {sql.py:282} INFO - Executing: 
+        DELETE FROM silver.clima
+        WHERE open_date_col = '2026-01-06'::date;
+        
+[2026-01-30T00:15:28.242+0000] {base.py:84} INFO - Using connection ID 'redshift_default' for task execution.
+[2026-01-30T00:15:28.250+0000] {base.py:84} INFO - Using connection ID 'redshift_default' for task execution.
+[2026-01-30T00:15:28.897+0000] {sql.py:495} INFO - Running statement: 
+        DELETE FROM silver.clima
+        WHERE open_date_col = '2026-01-06'::date;
+        , parameters: None
+[2026-01-30T00:15:29.050+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-01-30T00:15:29.050+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 401, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/common/sql/operators/sql.py", line 288, in execute
+    output = hook.run(
+             ^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/common/sql/hooks/sql.py", line 442, in run
+    self._run_command(cur, sql_statement, parameters)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/providers/common/sql/hooks/sql.py", line 500, in _run_command
+    cur.execute(sql_statement)
+psycopg2.errors.InsufficientPrivilege: permission denied for relation clima
+
+[2026-01-30T00:15:29.061+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=redshift_copy_incremental, task_id=delete_dt_partition, run_id=scheduled__2026-01-06T00:00:00+00:00, execution_date=20260106T000000, start_date=20260130T001528, end_date=20260130T001529
+[2026-01-30T00:15:29.074+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 11 for task delete_dt_partition (permission denied for relation clima
+; 625)
+[2026-01-30T00:15:29.127+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 1
+[2026-01-30T00:15:29.137+0000] {warnings.py:112} WARNING - /home/***/.local/lib/python3.12/site-packages/***/models/baseoperator.py:1297: AirflowProviderDeprecationWarning: Call to deprecated class PostgresOperator. (Please use `***.providers.common.sql.operators.sql.SQLExecuteQueryOperator`.Also, you can provide `hook_params={'schema': <database>}`.)
+  result = cls.__new__(cls)
+
+[2026-01-30T00:15:29.151+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-01-30T00:15:29.153+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
