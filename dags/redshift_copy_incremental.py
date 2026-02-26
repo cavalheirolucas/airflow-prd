@@ -17,18 +17,28 @@ PARTITION_COL = "open_date_col"
 # (RECOMENDADO) Role do Redshift p/ ler S3 (ajuste)
 REDSHIFT_IAM_ROLE_ARN = "arn:aws:iam::599942835378:role/service-role/AmazonRedshift-CommandsAccessRole-20260115T194543"
 
+
+default_args = {
+    # robustez contra falhas intermitentes (ex: "server closed the connection unexpectedly")
+    "retries": 3,
+    "retry_delay": timedelta(minutes=5),
+    "retry_exponential_backoff": True,
+    "max_retry_delay": timedelta(minutes=20),
+}
+
 with DAG(
     dag_id="redshift_copy_incremental",
     start_date=datetime(2026, 1, 28),
     schedule="0 10 * * *",
     catchup=False,
     max_active_runs=1,
+    default_args=default_args,
     tags=["redshift", "copy", "incremental"],
 ) as dag:
 
-    delete_partition = PostgresOperator(
+    delete_partition = SQLExecuteQueryOperator(
         task_id="delete_dt_partition",
-        postgres_conn_id="redshift_default",
+        conn_id="redshift_default",   # substitui postgres_conn_id
         sql=f"""
         DELETE FROM {REDSHIFT_SCHEMA}.{REDSHIFT_TABLE}
         WHERE {PARTITION_COL} = '{TARGET_DS}'::date;
