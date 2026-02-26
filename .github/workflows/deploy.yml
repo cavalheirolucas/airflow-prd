@@ -7,12 +7,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Write SSH key
         run: |
-          echo "${{ secrets.VM_SSH_KEY_B64 }}" | base64 -d > key.pem
-          chmod 600 key.pem
+          KEY_PATH="$RUNNER_TEMP/key.pem"
+          echo "${{ secrets.VM_SSH_KEY_B64 }}" | base64 -d > "$KEY_PATH"
+          chmod 600 "$KEY_PATH"
+          echo "KEY_PATH=$KEY_PATH" >> $GITHUB_ENV
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -20,7 +21,7 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           port: ${{ secrets.VM_PORT }}
-          key_path: key.pem
+          key_path: ${{ env.KEY_PATH }}
           script: |
             set -e
             cd ${{ secrets.VM_DEPLOY_PATH }}
