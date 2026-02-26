@@ -7,20 +7,24 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Write SSH key
+        run: |
+          echo "${{ secrets.VM_SSH_KEY_B64 }}" | base64 -d > key.pem
+          chmod 600 key.pem
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           port: ${{ secrets.VM_PORT }}
-          key: ${{ secrets.VM_SSH_KEY }}
+          key_path: key.pem
           script: |
             set -e
             cd ${{ secrets.VM_DEPLOY_PATH }}
-
             git fetch --all
             git reset --hard origin/main
-
             docker compose restart
             docker compose ps
