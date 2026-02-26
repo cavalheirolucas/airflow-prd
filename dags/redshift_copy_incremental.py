@@ -14,6 +14,7 @@ REDSHIFT_TABLE = "clima"
 # Coluna de partição na tabela (ajuste se for diferente)
 PARTITION_COL = "open_date_col"
 
+# teste workflow
 # (RECOMENDADO) Role do Redshift p/ ler S3 (ajuste)
 REDSHIFT_IAM_ROLE_ARN = "arn:aws:iam::599942835378:role/service-role/AmazonRedshift-CommandsAccessRole-20260115T194543"
 
